@@ -13,7 +13,7 @@ config = loadjson('config.json');
 
 % Set directories
 bvecs_pre = fullfile(config.bvecs);
-outAcpcTransform = load(fullfile('nodif_acpc.mat','-ASCII');
+outAcpcTransform = load(fullfile('nodif_acpc.mat'),'-ASCII');
 outBvecs = fullfile('dwi.bvecs')
 
 % Rotate bvecs
