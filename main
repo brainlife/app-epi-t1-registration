@@ -4,6 +4,7 @@
 
 ## modules
 module load fsl/5.0.9
+module load matlab/2017a
 
 echo "Setting file paths"
 # Grab the config.json inputs
