@@ -188,6 +188,12 @@ else
 fi
 echo "Registration Pipeline Complete"
 
+mv dwi.nii.gz dwi_aligned_trilin.nii.gz;
+mv dwi.bvecs dwi_aligned_trilin.bvecs;
+mv dwi.bvals dwi_aligned_trilin.bvals;
+cp nodif_acpc_mean.nii.gz dwi_aligned_trilin_b0.nii.gz;
+mv nodif_acpc.mat dwi_aligned_trilin_acpcXform.mat;
+
 if [ -f "dt6.json" ];then
 	echo "File exists. Skipping dt6 creation"
 else
@@ -202,15 +208,10 @@ else
 	fi
 fi
 
-mv dwi.nii.gz data_aligned_trilin.nii.gz;
-mv dwi.bvecs data_aligned_trilin.bvecs;
-mv dwi.bvals data_aligned_trilin.bvals;
-mv nodif_acpc_mean.nii.gz data_aligned_trilin_b0.nii.gz;
-mv nodif_acpc.mat data_aligned_trilin_acpcXform.mat;
 mkdir ./dti;
 mv dt6.mat ./dti/;
 rm -rf *nodif*;
-rm -rf *dwi*;
+rm -rf *dwi.*;
 rm -rf *t1*;
 
 echo "Complete"
