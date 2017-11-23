@@ -4,6 +4,7 @@
 
 ## modules
 module load fsl/5.0.9
+module unload matlab
 module load matlab/2017a
 module load spm/8
 
@@ -84,8 +85,13 @@ else
 		nodif.nii.gz \
 		0;
 
+	## Create mean b0 image
+	fslmaths nodif \
+		-Tmean \
+		nodif_mean;
+
 	# Brain extraction before alignment
-	bet nodif.nii.gz \
+	bet nodif_mean.nii.gz \
 		nodif_brain \
 		-f 0.4 \
 		-g 0 \
@@ -143,6 +149,68 @@ else
 fi
 echo "Rotation complete"
 
+if [ -f "nodif_acpc_L1.nii.gz" ];then
+	echo "File exists. Skipping tensor fit"
+else
+	echo "Fitting tensor model"
+	## create b0 image
+	select_dwi_vols \
+		dwi.nii.gz \
+		dwi.bvals \
+		nodif_acpc.nii.gz \
+		0;
+
+	## Create mean b0 image
+	fslmaths nodif_acpc.nii.gz \
+		-Tmean \
+		nodif_acpc_mean;
+
+	## creates brainmask for DTIFIT
+	bet nodif_acpc_mean.nii.gz \
+		nodif_acpc_mean_brain \
+		-f 0.4 \
+		-g 0 \
+		-m;
+
+	## fits tensor model
+	dtifit --data=dwi \
+		--out=nodif_acpc \
+		--mask=nodif_acpc_mean_brain_mask \
+		--bvecs=dwi.bvecs \
+		--bvals=dwi.bvals;
+
+	ret=$?
+	if [ ! $ret -eq 0 ]; then
+		echo "Tensor fit failed"
+		echo $ret > finished
+		exit $ret
+	fi
+fi
 echo "Registration Pipeline Complete"
 
+if [ -f "dt6.json" ];then
+	echo "File exists. Skipping dt6 creation"
+else
+	echo "dt6 creation"
+	matlab -nosplash -nodisplay -r "dt6FromFsl()";
 
+	ret=$?
+	if [ ! $ret -eq 0 ]; then
+		echo "dt6 creation failed"
+		echo $ret > finished
+		exit $ret
+	fi
+fi
+
+mv dwi.nii.gz data_aligned_trilin.nii.gz;
+mv dwi.bvecs data_aligned_trilin.bvecs;
+mv dwi.bvals data_aligned_trilin.bvals;
+mv nodif_acpc_mean.nii.gz data_aligned_trilin_b0.nii.gz;
+mv nodif_acpc.mat data_aligned_trilin_acpcXform.mat;
+mkdir ./dti;
+mv dt6.mat ./dti/;
+rm -rf *nodif*;
+rm -rf *dwi*;
+rm -rf *t1*;
+
+echo "Complete"
