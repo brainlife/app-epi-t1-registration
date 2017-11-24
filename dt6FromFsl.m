@@ -22,12 +22,12 @@ disp('creating dt6')
 dt6 = dtiMakeDt6FromFsl(b0FileName,t1FileName,outPathName,autoAlign);
 
 jsonStruct = [];
-jsonStruct.files.b0 = fullfile(pwd,'dwi_aligned_trilin_b0.nii.gz');
+jsonStruct.files.b0 = 'dwi_aligned_trilin_b0.nii.gz';
 jsonStruct.files.dt6 = dt6;
 jsonStruct.files.t1 = config.t1;
-jsonStruct.files.alignedDwRaw = fullfile(pwd,'dwi_aligned_trilin.nii.gz');
-jsonStruct.files.alignedDwBvecs = fullfile(pwd,'dwi_aligned_trilin.bvecs');
-jsonStruct.files.alignedDwBvals = fullfile(pwd,'dwi_aligned_trilin.bvals');
+jsonStruct.files.alignedDwRaw = 'dwi_aligned_trilin.nii.gz';
+jsonStruct.files.alignedDwBvecs = 'dwi_aligned_trilin.bvecs';
+jsonStruct.files.alignedDwBvals = 'dwi_aligned_trilin.bvals';
 
 
 disp('creating dt6.json')
