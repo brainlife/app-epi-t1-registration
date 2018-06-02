@@ -3,12 +3,14 @@ function dt6FromFsl()
 switch getenv('ENV')
 case 'IUHPC'
   disp('loading paths (HPC)')
-  addpath(genpath('/N/u/hayashis/BigRed2/git/vistasoft'))
+  addpath(genpath('/N/u/brlife/git/vistasoft'))
   addpath(genpath('/N/u/brlife/git/jsonlab'))
+  addpath(genpath('/N/u/brlife/git/spm'))
 case 'VM'
   disp('loading paths (VM)')
   addpath(genpath('/usr/local/vistasoft'))
   addpath(genpath('/usr/local/jsonlab'))
+  addpath(genpath('/usr/local/spm'))
 end
 
 config = loadjson('config.json');

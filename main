@@ -1,217 +1,42 @@
 #!/bin/bash
-#PBS -k o
-#PBS -l nodes=1:ppn=8,walltime=3:00:00
+#PBS -l nodes=1:ppn=8,walltime=5:00:00
+#PBS -N fslDtiinit
+#PBS -V
 
-## modules
-module load fsl/5.0.9
-module unload matlab
-module load matlab/2017a
-module load spm/8
+module load singularity 2> /dev/null
 
-echo "Setting file paths"
-# Grab the config.json inputs
-dwi=`./jq -r '.dwi' config.json`;
-bvals=`./jq -r '.bvals' config.json`;
-bvecs=`./jq -r '.bvecs' config.json`;
-t1=`./jq -r '.t1' config.json`;
-echo "Files loaded"
+echo "dwi to t1 registration"
+time singularity exec -e docker://brainlife/fsl:5.0.9 ./fslRegistration.sh
 
-if [ -f "dwi.bvals" ];then
-	echo "File exists. Skipping copying of bvals file"
-else
-	echo "Copying bvals file"
-	
-	# Copy bvals file
-	cp ${bvals} dwi.bvals;
-	
-	ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "Copying failed"
-		echo $ret > finished
-		exit $ret
-	fi
-fi
+echo "reslice dwi"
+time singularity exec -e docker://brainlife/dipy:0.13.0 ./reslice_fxn.py
 
-if [ -f "t1.nii.gz" ];then
-	echo "File exists. Skipping Orientation and Cropping"
-else
-	echo "Orienting and cropping t1"
+echo "rotate bvecs"
+time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/rotateBvecs
 
-	## Reorient to radiological orientation
-	fslreorient2std \
-		${t1} \
-		t1.nii.gz;
+ehco "fit tensor"
+time singularity exec -e docker://brainlife/fsl:5.0.9 ./fslDTIFIT.sh
 
-	## Crop out neck and eye tissue
-	robustfov \
-		-i t1.nii.gz \
-		-r t1.nii.gz;
-
-	ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "Orientation and Cropping failed"
-		echo $ret > finished
-		exit $ret
-	fi
-fi
-
-if [ -f "t1_brain.nii.gz" ]; then
-	echo "File exists. Skipping T1 brain extraction"
-else
-	echo "T1 brainmask creation"
-	bet t1.nii.gz \
-		t1_brain.nii.gz \
-		-B \
-		-f 0.1 \
-		-g 0 \
-		-m;
-
-	ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "T1 brain extraction failed"
-		echo $ret > finished
-		exit $ret
-	fi
-fi
-
-if [ -f "nodif_brain.nii.gz" ]; then
-	echo "File exists. Skipping b0 brainmask creation."
-else	
-	echo "Creating b0 brainmask for alignment"
-	# Create b0 image
-	select_dwi_vols \
-		${dwi} \
-		${bvals} \
-		nodif.nii.gz \
-		0;
-
-	## Create mean b0 image
-	fslmaths nodif \
-		-Tmean \
-		nodif_mean;
-
-	# Brain extraction before alignment
-	bet nodif_mean.nii.gz \
-		nodif_brain \
-		-f 0.4 \
-		-g 0 \
-		-m;
-
-	ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "b0 brainmask creation failed"
-		echo $ret > finished
-		exit $ret
-	fi
-fi
-echo "b0 brainmask creation complete"
-
-if [ -f "nodif_acpc.nii.gz" ];then
-	echo "Registered file exists"
-else
-	echo "EPI Image to T1 Registration"
-	epi_reg \
-		--epi=nodif_brain \
-		--t1=t1 \
-		--t1brain=t1_brain \
-		--out=nodif_acpc;
-
-	flirt \
-		-ref nodif_acpc \
-		-in ${dwi} \
-		-applyxfm \
-		-init nodif_acpc.mat \
-		-out dwi.nii.gz;
-
-	python -u reslice_fxn.py;
-	
-	ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "Registration failed"
-		echo $ret > finished
-		exit $ret
-	fi
-fi
-echo "Registration complete"
-
-if [ -f "dwi.bvecs" ];then
-	echo "File exists. Skipping Bvec Rotation"
-else
-	echo "Bvec Rotation"
-	matlab -nodisplay -nosplash -r "rotateBvecs()";
-
-	ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "Rotation failed"
-		echo $ret > finished
-		exit $ret
-	fi
-fi
-echo "Rotation complete"
-
-if [ -f "nodif_acpc_L1.nii.gz" ];then
-	echo "File exists. Skipping tensor fit"
-else
-	echo "Fitting tensor model"
-	## create b0 image
-	select_dwi_vols \
-		dwi.nii.gz \
-		dwi.bvals \
-		nodif_acpc.nii.gz \
-		0;
-
-	## Create mean b0 image
-	fslmaths nodif_acpc.nii.gz \
-		-Tmean \
-		nodif_acpc_mean;
-
-	## creates brainmask for DTIFIT
-	bet nodif_acpc_mean.nii.gz \
-		nodif_acpc_mean_brain \
-		-f 0.4 \
-		-g 0 \
-		-m;
-
-	## fits tensor model
-	dtifit --data=dwi \
-		--out=nodif_acpc \
-		--mask=nodif_acpc_mean_brain_mask \
-		--bvecs=dwi.bvecs \
-		--bvals=dwi.bvals;
-
-	ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "Tensor fit failed"
-		echo $ret > finished
-		exit $ret
-	fi
-fi
-echo "Registration Pipeline Complete"
-
-mv dwi.nii.gz dwi_aligned_trilin.nii.gz;
-mv dwi.bvecs dwi_aligned_trilin.bvecs;
-mv dwi.bvals dwi_aligned_trilin.bvals;
-cp nodif_acpc_mean.nii.gz dwi_aligned_trilin_b0.nii.gz;
-mv nodif_acpc.mat dwi_aligned_trilin_acpcXform.mat;
-
-if [ -f "dt6.json" ];then
-	echo "File exists. Skipping dt6 creation"
-else
-	echo "dt6 creation"
-	matlab -nosplash -nodisplay -r "dt6FromFsl()";
-
-	ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "dt6 creation failed"
-		echo $ret > finished
-		exit $ret
-	fi
-fi
+echo "create dt6 structure"
+time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./dt6/dt6FromFsl
 
 mkdir ./dti;
+mkdir ./dti/bin;
 mv dt6.mat ./dti/;
+mv nodif_acpc_mean_brain_mask.nii.gz ./dti/bin/brainMask.nii.gz;
 rm -rf *nodif*;
 rm -rf *dwi.*;
 rm -rf *t1*;
 
 echo "Complete"
+
+#check for output files
+if [ -s ./dti/dt6.mat ];
+then
+	echo 0 > finished
+else
+	echo "output missing"
+	echo 1 > finished
+	exit 1
+fi
+
