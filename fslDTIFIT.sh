@@ -40,9 +40,9 @@ else
 	fi
 fi
 
-mv dwi.nii.gz dwi_aligned_trilin.nii.gz;
-mv dwi.bvecs dwi_aligned_trilin.bvecs;
-mv dwi.bvals dwi_aligned_trilin.bvals;
+cp dwi.nii.gz dwi_aligned_trilin.nii.gz;
+cp dwi.bvecs dwi_aligned_trilin.bvecs;
+cp dwi.bvals dwi_aligned_trilin.bvals;
 cp nodif_acpc_mean.nii.gz dwi_aligned_trilin_b0.nii.gz;
 mv nodif_acpc.mat dwi_aligned_trilin_acpcXform.mat;
 
