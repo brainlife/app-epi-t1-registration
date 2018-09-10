@@ -1,12 +1,18 @@
-[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.1-blue.svg)](https://doi.org/10.25663/bl.app.1)
+[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.37-blue.svg)](https://doi.org/10.25663/bl.app.37)
 
 # app-epi-t1-registration
 This app will register DWI images to a T1 image, fit a tensor model, and create a dt6.mat file using FSL and Vistasoft. First, the dwi image is registered to the t1 image using FSL's epi_reg and FLIRT by running the fslRegistration script. then, the dwi image is resliced back to the proper dimensions using dipy's reslice function by running the reslice_fxn script. Next, the bvecs are rotated based on the flirt transformation by using Vistasoft's dtiRawReorientBvecs function by running the rotateBvecs script. Then, the tensor model is fit using FSL's dtifit function by running the fslDTIFIT script. Finally, the dt6 structure is generated using Vistasoft's dtiMakeDt6FromFsl function by running the dt6FromFsl script.
 
-#### Authors
+### Authors
 - Brad Caron (bacaron@iu.edu)
+
+### Contributors
 - Soichi Hayashi (hayashi@iu.edu)
 - Franco Pestilli (franpest@indiana.edu)
+
+### Funding
+[![NSF-BCS-1734853](https://img.shields.io/badge/NSF_BCS-1734853-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1734853)
+[![NSF-BCS-1636893](https://img.shields.io/badge/NSF_BCS-1636893-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1636893)
 
 ## Running the App 
 
