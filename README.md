@@ -24,7 +24,7 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://d
         "t1": "./input/t1/t1.nii.gz",
         "dwi": "./input/dwi/dwi.nii.gz",
         "bvals": "./input/dwi/dwi.bvals",
-        "bvecs": "./input/dwi/dwi.bvecs",
+        "bvecs": "./input/dwi/dwi.bvecs"
 }
 ```
 
