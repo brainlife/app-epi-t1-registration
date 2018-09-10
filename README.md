@@ -61,7 +61,7 @@ This App requires the following libraries when run locally.
 
   - singularity: https://singularity.lbl.gov/
   - VISTASOFT: https://github.com/vistalab/vistasoft/
-  - SPM 8
+  - SPM 8: https://www.fil.ion.ucl.ac.uk/spm/software/spm8/
   - Freesurfer: https://hub.docker.com/r/brainlife/freesurfer/tags/6.0.0
   - FSL: https://hub.docker.com/r/brainlife/fsl/tags/5.0.9
   - Dipy: https://hub.docker.com/r/brainlife/dipy/tags/0.13.0
