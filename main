@@ -24,7 +24,10 @@ mkdir ./dti;
 mkdir ./dti/bin;
 mv dt6.mat ./dti/;
 mv nodif_acpc_mean_brain_mask.nii.gz ./dti/bin/brainMask.nii.gz;
-rm -rf *dwi.*;
+mv nodif_acpc_FA.nii.gz fa.nii.gz;
+mv nodif_acpc_MD.nii.gz md.nii.gz;
+mv nodif_acpc_AD.nii.gz ad.nii.gz;
+mv nodif_acpc_RD.nii.gz rd.nii.gz;
 rm -rf *nodif*;
 rm -rf *t1*;
 
