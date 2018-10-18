@@ -1,7 +1,6 @@
 #!/bin/bash
 #PBS -l nodes=1:ppn=8,vmem=32gb,walltime=8:00:00
 #PBS -N fslDtiinit
-#PBS -V
 
 module load singularity 2> /dev/null
 
