@@ -1,7 +1,0 @@
-{
-	"dwi":	"/media/brad/APPS/app-epi-t1-registration/dwi/dwi.nii.gz",
-	"bvals":	"/media/brad/APPS/app-epi-t1-registration/dwi/dwi.bvals",
-	"bvecs":	"/media/brad/APPS/app-epi-t1-registration/dwi/dwi.bvecs",
-	"t1":	"/media/brad/APPS/app-epi-t1-registration/anat/t1.nii.gz",
-	"resolution":	""
-}
