@@ -19,7 +19,7 @@ This app will register DWI images to a T1 image, fit a tensor model, and create 
 
 ### On Brainlife.io
 
-You can submit this App online at [https://doi.org/10.25663/bl.app.53](brainlife.io/App.37) via the "Execute" tab.
+You can submit this App online at [https://doi.org/10.25663/bl.app.53](https://doi.org/10.25663/bl.app.53) via the "Execute" tab.
 
 ### Running Locally (on your machine)
 
