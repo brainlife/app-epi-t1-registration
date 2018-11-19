@@ -45,8 +45,8 @@ fslmaths nodif_acpc_L2.nii.gz -add nodif_acpc_L3.nii.gz -div 2 nodif_acpc_RD.nii
 cp -v dwi.nii.gz dwi_aligned_trilin.nii.gz;
 cp -v dwi.bvecs dwi_aligned_trilin.bvecs;
 cp -v dwi.bvals dwi_aligned_trilin.bvals;
-cp nodif_acpc_mean.nii.gz dwi_aligned_trilin_b0.nii.gz;
-mv nodif_acpc.mat dwi_aligned_trilin_acpcXform.mat;
-mv nodif_acpc_L1.nii.gz nodif_acpc_AD.nii.gz;
+cp -v nodif_acpc_mean.nii.gz dwi_aligned_trilin_b0.nii.gz;
+cp -v nodif_acpc.mat dwi_aligned_trilin_acpcXform.mat;
+cp -v nodif_acpc_L1.nii.gz nodif_acpc_AD.nii.gz;
 
 echo "Registration Pipeline Complete"
