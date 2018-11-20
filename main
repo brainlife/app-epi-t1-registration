@@ -10,7 +10,7 @@ echo "dwi to t1 registration"
 time singularity exec -e docker://brainlife/fsl:5.0.9 ./fslRegistration.sh
 
 echo "reslice dwi"
-time singularity exec -e docker://brainlife/dipy:0.14 ./reslice_fxn.py
+time singularity exec -e docker://brainlife/dipy:0.14.2 ./reslice_fxn.py
 
 echo "rotate bvecs"
 time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/rotateBvecs
