@@ -1,34 +1,40 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=8,vmem=64gb,walltime=8:00:00
+#PBS -l nodes=1:ppn=8,vmem=32gb,walltime=8:00:00
 #PBS -N fslDtiinit
 
 module load singularity 2> /dev/null
 
-set -e
+echo "orient to RAS"
+time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./orient/orientToRAS
 
 echo "dwi to t1 registration"
 time singularity exec -e docker://brainlife/fsl:5.0.9 ./fslRegistration.sh
 
 echo "reslice dwi"
-time singularity exec -e docker://brainlife/dipy:0.14.2 ./reslice_fxn.py
+time singularity exec -e docker://brainlife/dipy:0.13.0 ./reslice_fxn.py
 
 echo "rotate bvecs"
 time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/rotateBvecs
 
 echo "fit tensor"
+mkdir dtiinit;
+mkdir ./dtiinit/dti;
+mkdir ./dtiinit/dti/bin;
 time singularity exec -e docker://brainlife/fsl:5.0.9 ./fslDTIFIT.sh
 
 echo "create dt6 structure"
-time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./dt6/dt6FromFsl
-
-mkdir ./dti;
-mkdir ./dti/bin;
-mv dt6.mat ./dti/;
-mv nodif_acpc_mean_brain_mask.nii.gz ./dti/bin/brainMask.nii.gz;
+mv nodif_acpc_tensor.nii.gz ./dtiinit/dti/bin/tensors.nii.gz;
+mv nodif_acpc_mean_brain_mask.nii.gz ./dtiinit/dti/bin/brainMask.nii.gz;
+mv nodif_acpc_fast_wmseg.nii.gz ./dtiinit/dti/bin/wmMask.nii.gz;
 mv nodif_acpc_FA.nii.gz fa.nii.gz;
 mv nodif_acpc_MD.nii.gz md.nii.gz;
 mv nodif_acpc_AD.nii.gz ad.nii.gz;
 mv nodif_acpc_RD.nii.gz rd.nii.gz;
+time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./dt6/dt6FromFsl
+
+mv dt6.mat ./dti/;
+
+
 rm -rf *nodif*;
 rm -rf *t1*;
 

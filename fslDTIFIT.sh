@@ -30,7 +30,8 @@ else
 		--out=nodif_acpc \
 		--mask=nodif_acpc_mean_brain_mask \
 		--bvecs=dwi.bvecs \
-		--bvals=dwi.bvals;
+		--bvals=dwi.bvals \
+		--save_tensor;
 
 	ret=$?
 	if [ ! $ret -eq 0 ]; then
@@ -42,11 +43,11 @@ fi
 
 fslmaths nodif_acpc_L2.nii.gz -add nodif_acpc_L3.nii.gz -div 2 nodif_acpc_RD.nii.gz;
 
-cp -v dwi.nii.gz dwi_aligned_trilin.nii.gz;
-cp -v dwi.bvecs dwi_aligned_trilin.bvecs;
-cp -v dwi.bvals dwi_aligned_trilin.bvals;
-cp -v nodif_acpc_mean.nii.gz dwi_aligned_trilin_b0.nii.gz;
-cp -v nodif_acpc.mat dwi_aligned_trilin_acpcXform.mat;
+cp -v dwi.nii.gz ./dtiinit/dwi_aligned_trilin.nii.gz;
+cp -v dwi.bvecs ./dtiinit/dwi_aligned_trilin.bvecs;
+cp -v dwi.bvals ./dtiinit/dwi_aligned_trilin.bvals;
+cp -v nodif_acpc_mean.nii.gz ./dtiinit/dwi_aligned_trilin_b0.nii.gz;
+cp -v nodif_acpc.mat ./dtiinit/dwi_aligned_trilin_acpcXform.mat;
 cp -v nodif_acpc_L1.nii.gz nodif_acpc_AD.nii.gz;
 
 echo "Registration Pipeline Complete"

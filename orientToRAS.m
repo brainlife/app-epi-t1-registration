@@ -1,4 +1,4 @@
-function out = rotateBvecs()
+function [] = orientToRAS()
 
 switch getenv('ENV')
 case 'IUHPC'
@@ -15,12 +15,29 @@ end
 
 config = loadjson('config.json');
 
-% Set directories
-bvecs_pre = fullfile('dwi.bvecs');
-outAcpcTransform = load(fullfile('nodif_acpc.mat'),'-ASCII');
-outBvecs = fullfile('dwi.bvecs')
+dwRaw = niftiRead(config.dwi);
+bvals = dlmread(config.bvals);
+bvecs = dlmread(config.bvecs);
+bvecXform = eye(3);
 
-% Rotate bvecs
-bvecs = dtiRawReorientBvecs(bvecs_pre,[],outAcpcTransform,outBvecs);
+[dw,canXform] = niftiApplyCannonicalXform(dwRaw);
+
+bvecXform = bvecXform * canXform(1:3,1:3);
+
+for ii=1:size(bvecs,2) 
+    bvecs(:,ii) = bvecXform * bvecs(:,ii);
+end
+
+niftiWrite(dw,'dwi.nii.gz');
+dlmwrite('dwi.bvecs',bvecs);
+
 exit;
 end
+
+
+
+
+
+
+
+

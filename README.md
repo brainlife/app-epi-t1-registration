@@ -1,5 +1,5 @@
 [![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
-[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.53-blue.svg)](https://doi.org/10.25663/bl.app.53)
+[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.37-blue.svg)](https://doi.org/10.25663/bl.app.37)
 
 # app-epi-t1-registration
 This app will register DWI images to a T1 image, fit a tensor model, and create a dt6.mat file using FSL and Vistasoft. First, the dwi image is registered to the t1 image using FSL's epi_reg and FLIRT by running the fslRegistration script. then, the dwi image is resliced back to the proper dimensions using dipy's reslice function by running the reslice_fxn script. Next, the bvecs are rotated based on the flirt transformation by using Vistasoft's dtiRawReorientBvecs function by running the rotateBvecs script. Then, the tensor model is fit using FSL's dtifit function by running the fslDTIFIT script. Finally, the dt6 structure is generated using Vistasoft's dtiMakeDt6FromFsl function by running the dt6FromFsl script.
@@ -19,7 +19,7 @@ This app will register DWI images to a T1 image, fit a tensor model, and create 
 
 ### On Brainlife.io
 
-You can submit this App online at [https://doi.org/10.25663/bl.app.53](https://doi.org/10.25663/bl.app.53) via the "Execute" tab.
+You can submit this App online at [https://doi.org/10.25663/bl.app.37](https://doi.org/10.25663/bl.app.37 via the "Execute" tab.
 
 ### Running Locally (on your machine)
 

@@ -6,9 +6,7 @@
 
 echo "Setting file paths"
 # Grab the config.json inputs
-dwi=`jq -r '.dwi' config.json`;
 bvals=`jq -r '.bvals' config.json`;
-bvecs=`jq -r '.bvecs' config.json`;
 t1=`jq -r '.t1' config.json`;
 echo "Files loaded"
 
@@ -54,7 +52,7 @@ else
 	echo "Creating b0 brainmask for alignment"
 	# Create b0 image
 	select_dwi_vols \
-		${dwi} \
+		dwi.nii.gz \
 		${bvals} \
 		nodif.nii.gz \
 		0;
@@ -92,7 +90,7 @@ else
 
 	flirt \
 		-ref nodif_acpc \
-		-in ${dwi} \
+		-in dwi.nii.gz \
 		-applyxfm \
 		-init nodif_acpc.mat \
 		-out dwi.nii.gz;
