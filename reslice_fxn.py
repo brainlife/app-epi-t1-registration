@@ -17,7 +17,7 @@ def reslice_fxn():
 	else:
 		new_zooms = int(config['resolution'])
 	
-	fimg = 'dwi.nii.gz'
+	fimg = 'dwi_aligned.nii.gz'
 	img = nib.load(fimg)
 	data = img.get_data()
 	affine = img.affine

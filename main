@@ -6,41 +6,35 @@ module load singularity 2> /dev/null
 
 set -e
 
-echo "dwi to t1 registration"
-time singularity exec -e docker://brainlife/fsl:5.0.9 ./fslRegistration.sh
+if [ ! -f dwi_aligned.nii.gz ]; then
+	echo "dwi to t1 registration"
+	time singularity exec -e docker://brainlife/fsl:5.0.9 ./fslRegistration.sh
+fi
 
-echo "reslice dwi"
-time singularity exec -e docker://brainlife/dipy:0.14.2 ./reslice_fxn.py
+if [ ! -f dwi.nii.gz ]; then
+	echo "reslice dwi"
+	time singularity exec -e docker://brainlife/dipy:0.14.2 ./reslice_fxn.py
+fi
 
-echo "rotate bvecs"
-time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/rotateBvecs
-
-echo "fit tensor"
-time singularity exec -e docker://brainlife/fsl:5.0.9 ./fslDTIFIT.sh
-
-echo "create dt6 structure"
-time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./dt6/dt6FromFsl
-
-mkdir ./dti;
-mkdir ./dti/bin;
-mv dt6.mat ./dti/;
-mv nodif_acpc_mean_brain_mask.nii.gz ./dti/bin/brainMask.nii.gz;
-mv nodif_acpc_FA.nii.gz fa.nii.gz;
-mv nodif_acpc_MD.nii.gz md.nii.gz;
-mv nodif_acpc_AD.nii.gz ad.nii.gz;
-mv nodif_acpc_RD.nii.gz rd.nii.gz;
-rm -rf *nodif*;
-rm -rf *t1*;
+if [ ! -f dwi.bvecs ]; then
+	echo "rotate bvecs"
+	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/rotateBvecs
+fi
 
 echo "Complete"
 
 #check for output files
-if [ -s ./dti/dt6.mat ];
-then
-	echo 0 > finished
-else
-	echo "output missing"
-	echo 1 > finished
-	exit 1
-fi
-
+#if [ -f dwi.nii.gz ];
+#then
+#	mkdir -p dwi
+#	mv dwi.nii.gz ./dwi/
+#	mv dwi.bvals ./dwi/
+#	mv dwi.bvecs ./dwi/
+#	rm -rf *.nii.gz
+#	echo 0 > finished
+#else
+#	echo "output missing"
+#	echo 1 > finished
+#	exit 1
+#fi
+#

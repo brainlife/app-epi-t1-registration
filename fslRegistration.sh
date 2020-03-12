@@ -95,7 +95,7 @@ else
 		-in ${dwi} \
 		-applyxfm \
 		-init nodif_acpc.mat \
-		-out dwi.nii.gz;
+		-out dwi_aligned.nii.gz;
 	
 	ret=$?
 	if [ ! $ret -eq 0 ]; then
