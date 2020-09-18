@@ -24,17 +24,17 @@ fi
 echo "Complete"
 
 #check for output files
-#if [ -f dwi.nii.gz ];
-#then
-#	mkdir -p dwi
-#	mv dwi.nii.gz ./dwi/
-#	mv dwi.bvals ./dwi/
-#	mv dwi.bvecs ./dwi/
-#	rm -rf *.nii.gz
-#	echo 0 > finished
-#else
-#	echo "output missing"
-#	echo 1 > finished
-#	exit 1
-#fi
-#
+if [ -f dwi.nii.gz ];
+then
+	mkdir -p dwi
+	mv dwi.nii.gz ./dwi/
+	mv dwi.bvals ./dwi/
+	mv dwi.bvecs ./dwi/
+	rm -rf *.nii.gz
+	echo 0 > finished
+else
+	echo "output missing"
+	echo 1 > finished
+	exit 1
+fi
+
