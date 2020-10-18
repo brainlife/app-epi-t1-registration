@@ -78,11 +78,11 @@ The secondary output of this app is `product.json`. This file allows web interfa
 
 This App requires the following libraries when run locally. 
 
-- FSL: 
-- jsonlab: 
-- SPM8: 
-- singularity: 
-- Python2: 
-- Dipy: 
-- Matlab: 
-- Vistasoft: 
+- FSL: https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation
+- jsonlab: https://github.com/fangq/jsonlab
+- SPM8: https://www.fil.ion.ucl.ac.uk/spm/software/spm8/
+- singularity: https://singularity.lbl.gov/quickstart
+- Python2: https://www.python.org/downloads/
+- Dipy: https://dipy.org/documentation/1.2.0./installation/
+- Matlab: https://www.mathworks.com/help/install/install-products.html
+- Vistasoft: https://github.com/vistalab/vistasoft
