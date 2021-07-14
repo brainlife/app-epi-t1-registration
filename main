@@ -26,10 +26,11 @@ echo "Complete"
 #check for output files
 if [ -f dwi.nii.gz ];
 then
-	mkdir -p dwi
+	mkdir -p dwi transform
 	mv dwi.nii.gz ./dwi/
 	mv dwi.bvals ./dwi/
 	mv dwi.bvecs ./dwi/
+	mv nodif_acpc.mat ./transform/affine.txt
 	rm -rf *.nii.gz
 	echo 0 > finished
 else
