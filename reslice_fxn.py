@@ -15,7 +15,7 @@ def reslice_fxn():
 		fimg_orig = nib.load(config['dwi'])
 		new_zooms = fimg_orig.header.get_zooms()[:3]
 	else:
-		new_zooms = int(config['resolution'])
+		new_zooms = float(config['resolution'])
 	
 	fimg = 'dwi_aligned.nii.gz'
 	img = nib.load(fimg)
