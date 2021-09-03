@@ -5,15 +5,20 @@
 #module load singularity 2> /dev/null
 
 set -e
+resolution=`jq -r '.resolution' config.json`
 
 if [ ! -f dwi_aligned.nii.gz ]; then
 	echo "dwi to t1 registration"
 	time singularity exec -e docker://brainlife/fsl:5.0.9 ./fslRegistration.sh
 fi
 
-if [ ! -f dwi.nii.gz ]; then
-	echo "reslice dwi"
-	time singularity exec -e docker://brainlife/dipy:0.14.2 ./reslice_fxn.py
+if [[ ! -z ${resolution} ]]; then
+	if [ ! -f dwi.nii.gz ]; then
+		echo "reslice dwi"
+		time singularity exec -e docker://brainlife/dipy:0.14.2 ./reslice_fxn.py
+	fi
+else
+	cp mv dwi_aligned.nii.gz dwi.nii.gz
 fi
 
 if [ ! -f dwi.bvecs ]; then
