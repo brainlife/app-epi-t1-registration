@@ -18,7 +18,7 @@ if [[ ! -z ${resolution} ]]; then
 		time singularity exec -e docker://brainlife/dipy:0.14.2 ./reslice_fxn.py
 	fi
 else
-	cp mv dwi_aligned.nii.gz dwi.nii.gz
+	mv dwi_aligned.nii.gz dwi.nii.gz
 fi
 
 if [ ! -f dwi.bvecs ]; then
