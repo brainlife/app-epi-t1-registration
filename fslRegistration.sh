@@ -30,7 +30,7 @@ else
 fi
 
 
-if [[ ${maskt1} == 'true' ]; then
+if [[ ${maskt1} == 'true' ]]; then
 	if [ -f "t1_brain.nii.gz" ]; then
 		echo "File exists. Skipping T1 brain extraction"
 	else
