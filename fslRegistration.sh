@@ -10,6 +10,7 @@ dwi=`jq -r '.dwi' config.json`;
 bvals=`jq -r '.bvals' config.json`;
 bvecs=`jq -r '.bvecs' config.json`;
 t1=`jq -r '.t1' config.json`;
+maskt1=`jq -r '.maskt1' config.json`;
 echo "Files loaded"
 
 if [ -f "dwi.bvals" ];then
@@ -29,23 +30,27 @@ else
 fi
 
 
-if [ -f "t1_brain.nii.gz" ]; then
-	echo "File exists. Skipping T1 brain extraction"
-else
-	echo "T1 brainmask creation"
-	bet ${t1} \
-		t1_brain \
-		-B \
-		-f 0.1 \
-		-g 0 \
-		-m;
+if [[ ${maskt1} == 'true' ]; then
+	if [ -f "t1_brain.nii.gz" ]; then
+		echo "File exists. Skipping T1 brain extraction"
+	else
+		echo "T1 brainmask creation"
+		bet ${t1} \
+			t1_brain \
+			-B \
+			-f 0.1 \
+			-g 0 \
+			-m;
 
-	ret=$?
-	if [ ! $ret -eq 0 ]; then
-		echo "T1 brain extraction failed"
-		echo $ret > finished
-		exit $ret
+		ret=$?
+		if [ ! $ret -eq 0 ]; then
+			echo "T1 brain extraction failed"
+			echo $ret > finished
+			exit $ret
+		fi
 	fi
+else
+	cp ${t1} ./t1_brain.nii.gz
 fi
 
 if [ -f "nodif_brain.nii.gz" ]; then
@@ -67,7 +72,7 @@ else
 	# Brain extraction before alignment
 	bet nodif_mean.nii.gz \
 		nodif_brain \
-		-f 0.4 \
+		-f 0.2 \
 		-g 0 \
 		-m;
 
