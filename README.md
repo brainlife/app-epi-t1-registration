@@ -2,6 +2,38 @@
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.53-blue.svg)](https://doi.org/10.25663/bl.app.53)
 
 # app-epi-t1-registration
+
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+**Registers DWI to a T1-weighted image with FSL epi_reg and flirt using the mean b0, optionally reslices it with DIPY, rotates the bvecs and outputs the aligned DWI and affine.**
+
+Averages the b0 volumes, skull-strips them with bet, registers them to the T1 (optionally skull-stripped with bet first) using epi_reg, applies the transform to the whole DWI with flirt, optionally reslices to an isotropic resolution and rotates the bvecs. Use it to bring DWI into T1/ACPC space before tractography. The README also mentions tensor fitting and a dt6.mat, which this branch's code does not produce.
+
+Run it on brainlife.io: [https://doi.org/10.25663/brainlife.app.286](https://doi.org/10.25663/brainlife.app.286)
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `dwi` | `neuro/dwi` | yes | The path to the DWI datatype |
+| `t1` | `neuro/anat/t1w` | yes | The path to the anat/t1w datatype |
+
+| Output | Datatype | Description |
+|---|---|---|
+| `dwi` | `neuro/dwi` | The T1-aligned DWI |
+| `transform` | `neuro/transform/nifti` | Affine transform from DWI to T1 space (affine.txt, FSL flirt matrix). |
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `resolution` | string |  | The isotropic resolution to reslice the data. If you want to leave the DWI in the native DWI space, leave this empty |
+| `maskt1` | boolean | `true` | If true, skull-strip the T1 with FSL bet before registration. |
+
+Runtime: container `brainlife/fsl:5.0.9`; 8 CPUs; 40 GB memory; 4 h walltime.
+
+Please cite:
+- Jenkinson M, Smith SM. A global optimisation method for robust affine registration of brain images. Medical Image Analysis 5(2):143-156 (2001).
+- Jenkinson M, Bannister PR, Brady JM, Smith SM. Improved optimisation for the robust and accurate linear registration and motion correction of brain images. NeuroImage 17(2):825-841 (2002).
+
+<!-- brainlife-app:end -->
+
 This app will register DWI images to a T1 image, fit a tensor model, and create a dt6.mat file using FSL and Vistasoft. First, the dwi image is registered to the t1 image using FSL's epi_reg and FLIRT by running the fslRegistration script. then, the dwi image is resliced back to the proper dimensions using dipy's reslice function by running the reslice_fxn script. Next, the bvecs are rotated based on the flirt transformation by using Vistasoft's dtiRawReorientBvecs function by running the rotateBvecs script. Then, the tensor model is fit using FSL's dtifit function by running the fslDTIFIT script. Finally, the dt6 structure is generated using Vistasoft's dtiMakeDt6FromFsl function by running the dt6FromFsl script.
 
 ### Authors
