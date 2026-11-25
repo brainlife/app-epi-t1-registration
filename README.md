@@ -41,7 +41,7 @@ This app will register DWI images to a T1 image, fit a tensor model, and create 
 
 ### Contributors
 - Soichi Hayashi (hayashi@iu.edu)
-- Franco Pestilli (franpest@indiana.edu)
+- Franco Pestilli ([@francopestilli](https://github.com/francopestilli))
 
 ### Funding
 [![NSF-BCS-1734853](https://img.shields.io/badge/NSF_BCS-1734853-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1734853)
